@@ -1,31 +1,22 @@
-"""
-Embedded Python Blocks:
-
-Each time this file is saved, GRC will instantiate the first class it finds
-to get ports and parameters of your block. The arguments to __init__  will
-be the parameters. All of them are required to have default values!
-"""
-
-import numpy as np
 from gnuradio import gr
 
-
-class blk(gr.sync_block):  # other base classes are basic_block, decim_block, interp_block
-    """Embedded Python Block example - a simple multiply const"""
-
-    def __init__(self, example_param=1.0):  # only default arguments here
-        """arguments to this function show up as parameters in GRC"""
+class PrintBinaryBlock(gr.sync_block):
+    def __init__(self):
         gr.sync_block.__init__(
             self,
-            name='Embedded Python Block',   # will show up in GRC
-            in_sig=[np.complex64],
-            out_sig=[np.complex64]
+            name='PrintBinaryBlock',
+            in_sig=[],
+            out_sig=[],
         )
-        # if an attribute with the same name as a parameter is found,
-        # a callback is registered (properties work, too).
-        self.example_param = example_param
 
     def work(self, input_items, output_items):
-        """example: multiply with constant"""
-        output_items[0][:] = input_items[0] * self.example_param
-        return len(output_items[0])
+        # Get the input from the binary slicer
+        input_port = self.get_input(0)
+        input_data = input_port[0]
+
+        # Process each input item (0 or 1) and print to console
+        for item in input_data:
+            print(f'Received: {item}')
+
+        # Return the number of items processed
+        return len(input_data)
